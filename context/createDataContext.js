@@ -1,0 +1,25 @@
+import React, { useReducer } from "react";
+
+export default (reducer, actions, initialState) => {
+    const Context = React.createContext();
+
+    const Provider = ({ children }) => {
+        const [state, dispatch] = useReducer(reducer, initialState);
+
+        // actions === { addBlgoPost: (dispatch) => { return () => {} } }
+        // ações vinculadas.
+        const boundActions = {};
+        for (let key in actions) {
+            // para cada item eu passo o dispatch.
+            boundActions[key] = actions[key](dispatch);
+        }
+
+        return (
+            <Context.Provider value={{ state, ...boundActions }}>
+                {children}
+            </Context.Provider>
+        );
+    };
+    
+    return { Context, Provider }
+};
